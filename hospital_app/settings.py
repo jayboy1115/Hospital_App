@@ -76,8 +76,8 @@ WSGI_APPLICATION = 'hospital_app.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'HOSPITAL',
-        'USER': 'johnson',
+        'NAME': 'hospital_db',
+        'USER': 'postgres',
         'PASSWORD': 'jay321125',
         'HOST': 'localhost',
         'PORT': '5432',
