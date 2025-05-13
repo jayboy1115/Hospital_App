@@ -5,7 +5,7 @@ class Hospital(models.Model):
     email = models.EmailField(unique=True)
     address = models.TextField()
     phone = models.CharField(max_length=20)
-    is_verified = models.BooleanField(default=False)  # Admin-controlled
+    is_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
