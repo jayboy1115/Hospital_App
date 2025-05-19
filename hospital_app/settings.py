@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'authentication',
     'hospitals',
-    'patients',
+    'patients.apps.PatientsConfig',
     'appointments',
     'chatbot',
 ]
