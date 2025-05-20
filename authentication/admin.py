@@ -4,13 +4,11 @@ from .models import User
 
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
-    # Fields to display in list view
     list_display = ('email', 'full_name', 'role', 'is_staff', 'is_superuser')
     list_filter  = ('role', 'is_staff', 'is_superuser', 'is_active')
     search_fields = ('email', 'full_name')
     ordering = ('email',)
 
-    # Fields shown when editing a user
     fieldsets = (
         (None,               {'fields': ('email', 'password')}),
         ('Personal Info',    {'fields': ('full_name',)}),
@@ -18,7 +16,6 @@ class UserAdmin(BaseUserAdmin):
         ('Important dates',  {'fields': ('last_login','created_at')}),
     )
 
-    # Fields shown on the “add user” form
     add_fieldsets = (
         (None, {
             'classes': ('wide',),

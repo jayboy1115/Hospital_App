@@ -1,5 +1,3 @@
-
-
 from django.db import models
 
 class Hospital(models.Model):
@@ -39,3 +37,4 @@ class Doctor(models.Model):
 
     def __str__(self):
         return f"Dr. {self.name} ({self.specialization})"
+
