@@ -29,7 +29,7 @@ class AppointmentDetailView(generics.RetrieveAPIView):
         if user.role == 'PATIENT':
             return Appointment.objects.filter(patient=user.patient)
         elif user.role == 'DOCTOR':
-            return Appointment.objects.filter(doctor__branch__doctors__user=user)
+            return Appointment.objects.filter(doctor=user.doctor)
         return Appointment.objects.none()
 
 class DoctorAppointmentListView(generics.ListAPIView):
