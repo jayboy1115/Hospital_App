@@ -5,6 +5,8 @@ class Hospital(models.Model):
     email = models.EmailField(unique=True)
     address = models.TextField()
     phone = models.CharField(max_length=20)
+    website = models.URLField(blank=True)
+    logo = models.ImageField(upload_to='hospital_logos/', blank=True, null=True)
     is_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -17,12 +19,17 @@ class HospitalBranch(models.Model):
     name     = models.CharField(max_length=255)
     address  = models.TextField()
     phone    = models.CharField(max_length=20)
+    email    = models.EmailField(blank=True)
     city     = models.CharField(max_length=100)
     state    = models.CharField(max_length=100)
+    manager  = models.CharField(max_length=255, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ('hospital', 'name')
+
     def __str__(self):
-        return f"{self.name} – {self.hospital.name}"
+        return f"{self.name}   {self.hospital.name}"
 
 
 class Doctor(models.Model):
