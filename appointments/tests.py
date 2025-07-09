@@ -109,7 +109,7 @@ class AppointmentTests(APITestCase):
         # Should be forbidden or not allowed
         self.assertIn(response.status_code, [status.HTTP_403_FORBIDDEN, status.HTTP_404_NOT_FOUND])
 
-    # ...existing code...
+
 
     def test_list_appointments_api(self):
         # Create two appointments
