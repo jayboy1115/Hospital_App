@@ -48,3 +48,29 @@ class HospitalModelTests(TestCase):
         self.assertEqual(self.branch.doctors.count(), 1)
         self.assertEqual(self.doctor.branch, self.branch)
         self.assertEqual(self.doctor.specialization, 'Cardiology')
+
+    def test_update_hospital_and_branch(self):
+        self.hospital.name = 'Updated Hospital'
+        self.hospital.save()
+        self.branch.city = 'Updated City'
+        self.branch.save()
+        self.assertEqual(Hospital.objects.get(id=self.hospital.id).name, 'Updated Hospital')
+        self.assertEqual(HospitalBranch.objects.get(id=self.branch.id).city, 'Updated City')
+
+    def test_delete_hospital_cascades(self):
+        hospital_id = self.hospital.id
+        self.hospital.delete()
+        self.assertFalse(Hospital.objects.filter(id=hospital_id).exists())
+        self.assertEqual(HospitalBranch.objects.filter(hospital_id=hospital_id).count(), 0)
+        self.assertEqual(Doctor.objects.filter(branch__hospital_id=hospital_id).count(), 0)
+
+    def test_doctor_available_times_format(self):
+        import json
+        times = json.loads(self.doctor.available_times)
+        self.assertIsInstance(times, list)
+        self.assertIn('Mon 9-11am', times)
+
+    def test_filter_doctors_by_specialization(self):
+        Doctor.objects.create(branch=self.branch, name='Dr. Jane', specialization='Pediatrics', available_times='["Tue 10-12am"]')
+        cardiologists = Doctor.objects.filter(specialization='Cardiology')
+        self.assertIn(self.doctor, cardiologists)
