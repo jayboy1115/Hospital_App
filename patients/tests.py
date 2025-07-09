@@ -8,9 +8,9 @@ class PatientModelTests(TransactionTestCase):
     def setUp(self):
         import uuid
         from django.db import connection
-        # Reset user PK sequence for PostgreSQL to avoid unique constraint errors
+        # Reset the user table's primary key sequence (PostgreSQL only)
         with connection.cursor() as cursor:
-            cursor.execute("ALTER SEQUENCE authentication_user_id_seq RESTART WITH 1000;")
+            cursor.execute("SELECT setval(pg_get_serial_sequence('authentication_user','id'), COALESCE(MAX(id), 1), MAX(id) IS NOT NULL) FROM authentication_user;")
         self.hospital = Hospital.objects.create(name=f'Test Hospital {uuid.uuid4().hex[:4]}', email=f"hospital_{uuid.uuid4()}@example.com", address='123 St', phone='1234567890')
         self.branch = HospitalBranch.objects.create(hospital=self.hospital, name=f'Main Branch {uuid.uuid4().hex[:4]}', address='123 St', phone='1234567890', city='City', state='State')
 
