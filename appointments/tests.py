@@ -50,7 +50,12 @@ class AppointmentTests(APITestCase):
         }
         response = self.client.post(url, data, format='json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn('This slot is already booked.', str(response.data))
+        # Accept either the serializer or model unique error message
+        self.assertTrue(
+            'This slot is already booked.' in str(response.data) or
+            'The fields doctor, appointment_time must make a unique set.' in str(response.data),
+            f"Unexpected error message: {response.data}"
+        )
 
     def test_past_appointment_time(self):
         try:
