@@ -20,7 +20,7 @@ class PatientAppointmentListCreateView(generics.ListCreateAPIView):
     def get_serializer_context(self):
         return {'request': self.request}
 
-class AppointmentDetailView(generics.RetrieveAPIView):
+class AppointmentDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = AppointmentSerializer
     permission_classes = [permissions.IsAuthenticated]
 

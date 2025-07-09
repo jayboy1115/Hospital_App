@@ -23,7 +23,10 @@ class AppointmentTests(APITestCase):
         self.client.force_authenticate(user=self.user)
 
     def test_create_appointment(self):
-        url = reverse('appointment-list') if 'appointment-list' in [u.name for u in self.client.handler._urls.urlpatterns] else '/appointments/'
+        try:
+            url = reverse('appointment-list')
+        except Exception:
+            url = '/api/appointments/my/'
         data = {
             'doctor': self.doctor.id,
             'appointment_time': (timezone.now() + timedelta(days=1)).isoformat(),
@@ -36,7 +39,10 @@ class AppointmentTests(APITestCase):
     def test_double_booking(self):
         appointment_time = timezone.now() + timedelta(days=1)
         Appointment.objects.create(patient=self.patient, doctor=self.doctor, appointment_time=appointment_time)
-        url = reverse('appointment-list') if 'appointment-list' in [u.name for u in self.client.handler._urls.urlpatterns] else '/appointments/'
+        try:
+            url = reverse('appointment-list')
+        except Exception:
+            url = '/api/appointments/my/'
         data = {
             'doctor': self.doctor.id,
             'appointment_time': appointment_time.isoformat(),
@@ -47,7 +53,10 @@ class AppointmentTests(APITestCase):
         self.assertIn('This slot is already booked.', str(response.data))
 
     def test_past_appointment_time(self):
-        url = reverse('appointment-list') if 'appointment-list' in [u.name for u in self.client.handler._urls.urlpatterns] else '/appointments/'
+        try:
+            url = reverse('appointment-list')
+        except Exception:
+            url = '/api/appointments/my/'
         data = {
             'doctor': self.doctor.id,
             'appointment_time': (timezone.now() - timedelta(days=1)).isoformat(),
@@ -111,7 +120,10 @@ class AppointmentTests(APITestCase):
             appointment_time=timezone.now() + timedelta(days=6),
             reason='A2'
         )
-        url = reverse('appointment-list') if 'appointment-list' in [u.name for u in self.client.handler._urls.urlpatterns] else '/appointments/'
+        try:
+            url = reverse('appointment-list')
+        except Exception:
+            url = '/api/appointments/my/'
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertGreaterEqual(len(response.data), 2)
@@ -123,7 +135,10 @@ class AppointmentTests(APITestCase):
             appointment_time=timezone.now() + timedelta(days=7),
             reason='Retrieve'
         )
-        url = reverse('appointment-detail', args=[appointment.id]) if 'appointment-detail' in [u.name for u in self.client.handler._urls.urlpatterns] else f'/appointments/{appointment.id}/'
+        try:
+            url = reverse('appointment-detail', args=[appointment.id])
+        except Exception:
+            url = f'/api/appointments/{appointment.id}/'
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['id'], appointment.id)
@@ -135,7 +150,10 @@ class AppointmentTests(APITestCase):
             appointment_time=timezone.now() + timedelta(days=8),
             reason='Update'
         )
-        url = reverse('appointment-detail', args=[appointment.id]) if 'appointment-detail' in [u.name for u in self.client.handler._urls.urlpatterns] else f'/appointments/{appointment.id}/'
+        try:
+            url = reverse('appointment-detail', args=[appointment.id])
+        except Exception:
+            url = f'/api/appointments/{appointment.id}/'
         data = {'notes': 'Updated via API'}
         response = self.client.patch(url, data, format='json')
         self.assertEqual(response.status_code, 200)
@@ -149,7 +167,10 @@ class AppointmentTests(APITestCase):
             appointment_time=timezone.now() + timedelta(days=9),
             reason='Delete'
         )
-        url = reverse('appointment-detail', args=[appointment.id]) if 'appointment-detail' in [u.name for u in self.client.handler._urls.urlpatterns] else f'/appointments/{appointment.id}/'
+        try:
+            url = reverse('appointment-detail', args=[appointment.id])
+        except Exception:
+            url = f'/api/appointments/{appointment.id}/'
         response = self.client.delete(url)
         self.assertIn(response.status_code, [200, 204, 202, 204])
         self.assertFalse(Appointment.objects.filter(id=appointment.id).exists())
