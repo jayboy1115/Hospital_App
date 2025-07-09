@@ -1,24 +1,30 @@
-
 from django.urls import reverse
 from rest_framework.test import APITestCase
 from rest_framework import status
 from .models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
+from io import BytesIO
+from PIL import Image
 
 
 class UserAuthTests(APITestCase):
     def test_user_registration_with_profile_image(self):
         url = reverse('register')
-        image = SimpleUploadedFile(
+        # Create a valid in-memory image
+        image_io = BytesIO()
+        image = Image.new('RGB', (10, 10), color='red')
+        image.save(image_io, format='JPEG')
+        image_io.seek(0)
+        image_file = SimpleUploadedFile(
             name='test_image.jpg',
-            content=b'file_content',
+            content=image_io.read(),
             content_type='image/jpeg'
         )
         data = {
             'email': 'testuser@example.com',
             'full_name': 'Test User',
             'password': 'testpass123',
-            'profile_image': image
+            'profile_image': image_file
         }
         response = self.client.post(url, data, format='multipart')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)

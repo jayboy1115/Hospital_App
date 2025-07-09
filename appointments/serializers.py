@@ -5,7 +5,10 @@ from django.utils import timezone
 class AppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
-        fields = ['id', 'patient', 'doctor', 'appointment_time', 'status', 'created_at']
+        fields = [
+            'id', 'patient', 'doctor', 'appointment_time', 'status',
+            'created_at', 'notes', 'reason', 'duration'
+        ]
         read_only_fields = ['id', 'patient', 'status', 'created_at']
 
     def validate_appointment_time(self, value):
