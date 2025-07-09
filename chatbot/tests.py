@@ -14,7 +14,11 @@ class ChatbotTests(TestCase):
         self.user = User.objects.create_user(email=unique_email, password='testpass123', full_name='Patient User')
         self.hospital = Hospital.objects.create(name='Test Hospital', email=unique_hospital_email, address='123 St', phone='1234567890')
         self.branch = HospitalBranch.objects.create(hospital=self.hospital, name=unique_branch_name, address='123 St', phone='1234567890', city='City', state='State')
-        self.patient = Patient.objects.create(user=self.user, hospital_branch=self.branch, universal_id=unique_universal_id)
+        # Use the auto-created Patient from the signal and update its fields
+        self.patient = Patient.objects.get(user=self.user)
+        self.patient.hospital_branch = self.branch
+        self.patient.universal_id = unique_universal_id
+        self.patient.save()
         self.session = ChatbotSession.objects.create(patient=self.patient, symptoms='Cough and fever')
 
     def test_chatbot_session_creation(self):

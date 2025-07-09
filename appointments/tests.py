@@ -15,7 +15,11 @@ class AppointmentTests(APITestCase):
         self.branch = HospitalBranch.objects.create(hospital=self.hospital, name='Main Branch', address='123 St', phone='1234567890', city='City', state='State')
         self.doctor = Doctor.objects.create(branch=self.branch, name='Dr. Who', specialization='General', available_times='["Mon 9-11am"]')
         self.user = User.objects.create_user(email='patient@example.com', password='testpass123', full_name='Patient User')
-        self.patient = Patient.objects.create(user=self.user, hospital_branch=self.branch, universal_id='P123')
+        # Use the auto-created Patient from the signal and update its fields
+        self.patient = Patient.objects.get(user=self.user)
+        self.patient.hospital_branch = self.branch
+        self.patient.universal_id = 'P123'
+        self.patient.save()
         self.client.force_authenticate(user=self.user)
 
     def test_create_appointment(self):
